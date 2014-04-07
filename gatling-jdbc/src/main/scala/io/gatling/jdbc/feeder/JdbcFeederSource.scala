@@ -24,7 +24,7 @@ import io.gatling.jdbc.util.SQLHelper.withConnection
 
 object JdbcFeederSource {
 
-  def apply(url: String, username: String, password: String, sql: String): Feeder[Any] = {
+  def apply(url: String, username: String, password: String, sql: String): IndexedSeq[Record[Any]] = {
 
     withConnection(DriverManager.getConnection(url, username, password)) { connection =>
       val preparedStatement = connection.prepareStatement(sql, TYPE_FORWARD_ONLY, CONCUR_READ_ONLY)
@@ -42,7 +42,7 @@ object JdbcFeederSource {
           if (!resultSet.next) records
           else loadRec(records :+ computeRecord)
 
-      loadRec(Vector.empty).toIterator
+      loadRec(Vector.empty)
     }
   }
 }
